@@ -15,6 +15,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.nexus.rickandmortycompose.models.NavigationBarItemModel
 import com.nexus.rickandmortycompose.models.navigationBarItems
 import com.nexus.rickandmortycompose.ui.theme.RickAndMortyComposeTheme
+import com.ramcosta.composedestinations.DestinationsNavHost
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.NavGraph
+import com.ramcosta.composedestinations.annotation.RootNavGraph
+import com.ramcosta.composedestinations.spec.NavGraphSpec
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,7 +31,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Greeting("Android")
+                   DestinationsNavHost(navGraph = NavGraphs.root)
                 }
             }
         }
@@ -34,11 +39,9 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(name: String) {
-//    var selectedItem = remember {
-//        mutableStateOf()
-//    }
-
+@RootNavGraph(start = true)
+@Destination
+fun HomeScreen() {
     Scaffold(
         bottomBar = {
             NavigationBar {
@@ -64,6 +67,6 @@ fun Greeting(name: String) {
 @Composable
 fun DefaultPreview() {
     RickAndMortyComposeTheme {
-        Greeting("Android")
+        HomeScreen()
     }
 }
