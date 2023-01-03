@@ -12,3 +12,12 @@ data class Episode(
     val characters: List<String> = emptyList(),
     val url: String
 )
+
+val dummyEpisode = Episode(
+    id = 1,
+    name = "Pilot",
+    airDate = "",
+    episode = "S01E01",
+    characters = listOf(),
+    url = ""
+)
