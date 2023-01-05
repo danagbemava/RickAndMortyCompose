@@ -5,4 +5,8 @@ import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
 class RNMApplication : Application() {
+
+    override fun onCreate() {
+        super.onCreate()
+    }
 }
