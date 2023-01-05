@@ -13,8 +13,8 @@ data class NavigationBarItemModel(
 )
 
 val navigationBarItems = listOf(
-    NavigationBarItemModel(icon = Icons.Default.Person, name = "Characters"),
+//    NavigationBarItemModel(icon = Icons.Default.Person, name = "Characters"),
     NavigationBarItemModel(icon = Icons.Default.LocationOn, name = "Locations"),
     NavigationBarItemModel(icon = Icons.Default.Info, name = "Episodes"),
-    NavigationBarItemModel(icon = Icons.Sharp.SwapHoriz, name = "Compare"),
+//    NavigationBarItemModel(icon = Icons.Sharp.SwapHoriz, name = "Compare"),
 )

@@ -12,13 +12,17 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
+import com.nexus.rickandmortycompose.destinations.Destination
 import com.nexus.rickandmortycompose.models.NavigationBarItemModel
 import com.nexus.rickandmortycompose.models.navigationBarItems
+import com.nexus.rickandmortycompose.screens.episodes.EpisodesScreen
 import com.nexus.rickandmortycompose.ui.theme.RickAndMortyComposeTheme
 import com.ramcosta.composedestinations.DestinationsNavHost
-import com.ramcosta.composedestinations.annotation.Destination
+//import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.NavGraph
 import com.ramcosta.composedestinations.annotation.RootNavGraph
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.spec.NavGraphSpec
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -42,26 +46,35 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 @RootNavGraph(start = true)
-@Destination
 fun HomeScreen() {
+    
     Scaffold(
         bottomBar = {
-            NavigationBar {
-                navigationBarItems.forEach {
-                    NavigationBarItem(
-                        selected = false,
-                        onClick = {},
-                        label = {
-                            Text(text = it.name)
-                        },
-                        icon = {
-                            Icon(imageVector = it.icon, contentDescription = it.name)
-                        })
-                }
-            }
+
         }
     ) {
+        EpisodesScreen()
+    }
+}
 
+@Composable
+fun BottomNavigationBar(
+    navController: NavController
+) {
+    val currentDestination: Destination = navController.appCurrentDestinationAsState().value ?: NavGraphs.root.startAppDestination
+
+    NavigationBar {
+        navigationBarItems.forEach { item ->
+            NavigationBarItem(
+                selected = item.name == currentDestination.route ,
+                onClick = {},
+                label = {
+                    Text(text = item.name)
+                },
+                icon = {
+                    Icon(imageVector = item.icon, contentDescription = item.name)
+                })
+        }
     }
 }
 
