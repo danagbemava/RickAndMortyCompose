@@ -8,22 +8,25 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
-import com.nexus.rickandmortycompose.destinations.Destination
-import com.nexus.rickandmortycompose.models.NavigationBarItemModel
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.nexus.rickandmortycompose.models.navigationBarItems
-import com.nexus.rickandmortycompose.screens.episodes.EpisodesScreen
+import com.nexus.rickandmortycompose.screens.NavGraphs
+import com.nexus.rickandmortycompose.screens.appCurrentDestinationAsState
+import com.nexus.rickandmortycompose.screens.destinations.Destination
+import com.nexus.rickandmortycompose.screens.destinations.EpisodesScreenDestination
+import com.nexus.rickandmortycompose.screens.episodes.EpisodeListViewModel
+import com.nexus.rickandmortycompose.screens.startAppDestination
 import com.nexus.rickandmortycompose.ui.theme.RickAndMortyComposeTheme
 import com.ramcosta.composedestinations.DestinationsNavHost
-//import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.annotation.NavGraph
 import com.ramcosta.composedestinations.annotation.RootNavGraph
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import com.ramcosta.composedestinations.spec.NavGraphSpec
+import com.ramcosta.composedestinations.navigation.dependency
+import com.ramcosta.composedestinations.spec.DirectionDestinationSpec
+import com.ramcosta.composedestinations.utils.navGraph
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -37,7 +40,8 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                   DestinationsNavHost(navGraph = NavGraphs.root)
+                    val navController = rememberNavController()
+                   HomeScreen(navController = navController)
                 }
             }
         }
@@ -45,29 +49,37 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-@RootNavGraph(start = true)
-fun HomeScreen() {
-    
+fun HomeScreen(navController: NavHostController) {
+    val currentDestination: Destination = navController.appCurrentDestinationAsState().value ?: NavGraphs.root.startAppDestination
+
     Scaffold(
         bottomBar = {
-
+            BottomNavigationBar(
+                currentDestination = currentDestination,
+                onItemClicked = {
+                    navController.navigate(it.route)
+                }
+            )
         }
     ) {
-        EpisodesScreen()
+       DestinationsNavHost(navGraph = NavGraphs.root, navController = navController)
+//        , dependenciesContainerBuilder = {
+//           dependency(EpisodesScreenDestination) {hiltViewModel<EpisodeListViewModel>()}
+//       })
     }
 }
 
 @Composable
 fun BottomNavigationBar(
-    navController: NavController
+     currentDestination: Destination,
+     onItemClicked : (DirectionDestinationSpec) -> Unit
 ) {
-    val currentDestination: Destination = navController.appCurrentDestinationAsState().value ?: NavGraphs.root.startAppDestination
 
     NavigationBar {
         navigationBarItems.forEach { item ->
             NavigationBarItem(
-                selected = item.name == currentDestination.route ,
-                onClick = {},
+                selected = item.direction == currentDestination,
+                onClick = { onItemClicked(item.direction) },
                 label = {
                     Text(text = item.name)
                 },
@@ -82,6 +94,7 @@ fun BottomNavigationBar(
 @Composable
 fun DefaultPreview() {
     RickAndMortyComposeTheme {
-        HomeScreen()
+        val navController = rememberNavController()
+        HomeScreen(navController = navController)
     }
 }

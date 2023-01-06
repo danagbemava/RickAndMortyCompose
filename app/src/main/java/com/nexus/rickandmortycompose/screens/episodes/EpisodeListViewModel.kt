@@ -62,7 +62,7 @@ sealed class EpisodeListScreenState {
 
     object Loading : EpisodeListScreenState()
 
-    class Success(episodes: List<Episode>) : EpisodeListScreenState()
+    data class Success(val episodes: List<Episode>) : EpisodeListScreenState()
 
-    class Error(error: String) : EpisodeListScreenState()
+    data class Error(val error: String) : EpisodeListScreenState()
 }
